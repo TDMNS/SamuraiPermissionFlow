@@ -9,8 +9,9 @@ import Foundation
 
 public enum SamuraiPermission {
     public static let camera = CameraPermission()
-    
+
     #if os(iOS)
     public static let microphone = MicrophonePermission()
+    public static let photos = PhotosPermission()
     #endif
 }
