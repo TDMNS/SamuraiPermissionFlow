@@ -9,6 +9,11 @@
 
 import UserNotifications
 
+/// Handles user notification permission.
+///
+/// README note:
+/// Notification permission does not require an Info.plist usage description,
+/// but the app must configure notification capabilities depending on its use case.
 public struct NotificationsPermission: PermissionProvider {
 
     public init() {}

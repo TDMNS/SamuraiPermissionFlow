@@ -7,6 +7,11 @@
 
 import AVFoundation
 
+/// Handles camera permission.
+///
+/// README note:
+/// To request camera permission, the host app must include
+/// `NSCameraUsageDescription` in its Info.plist.
 public struct CameraPermission: PermissionProvider {
 
     public init() {}

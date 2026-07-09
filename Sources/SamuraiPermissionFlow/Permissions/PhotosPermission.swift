@@ -9,6 +9,11 @@
 
 import Photos
 
+/// Handles photo library permission.
+///
+/// README note:
+/// To request photo library permission, the host app should include
+/// `NSPhotoLibraryUsageDescription` in its Info.plist.
 public struct PhotosPermission: PermissionProvider {
 
     public init() {}

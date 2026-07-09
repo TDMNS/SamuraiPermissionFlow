@@ -10,6 +10,8 @@
 import CoreLocation
 import Foundation
 
+/// Internal helper that bridges `CLLocationManagerDelegate` callbacks
+/// to async/await for "When In Use" location permission requests.
 final class LocationPermissionRequester: NSObject, CLLocationManagerDelegate {
 
     private static var activeRequester: LocationPermissionRequester?

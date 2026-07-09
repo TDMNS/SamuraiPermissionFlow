@@ -9,6 +9,11 @@
 
 import AVFoundation
 
+/// Handles microphone permission.
+///
+/// README note:
+/// To request microphone permission, the host app must include
+/// `NSMicrophoneUsageDescription` in its Info.plist.
 public struct MicrophonePermission: PermissionProvider {
 
     public init() {}
