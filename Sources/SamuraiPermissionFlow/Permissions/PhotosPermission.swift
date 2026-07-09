@@ -41,9 +41,7 @@ public struct PhotosPermission: PermissionProvider {
         }
     }
 
-    private static func mapStatus(
-        _ status: PHAuthorizationStatus
-    ) -> PermissionStatus {
+    private static func mapStatus(_ status: PHAuthorizationStatus) -> PermissionStatus {
         switch status {
         case .notDetermined:
             return .notDetermined

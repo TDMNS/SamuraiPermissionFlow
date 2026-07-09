@@ -43,9 +43,7 @@ public struct NotificationsPermission: PermissionProvider {
         }
     }
 
-    private static func mapStatus(
-        _ status: UNAuthorizationStatus
-    ) -> PermissionStatus {
+    private static func mapStatus(_ status: UNAuthorizationStatus) -> PermissionStatus {
         switch status {
         case .notDetermined:
             return .notDetermined
