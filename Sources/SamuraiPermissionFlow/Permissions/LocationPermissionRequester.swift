@@ -25,6 +25,7 @@ final class LocationPermissionRequester: NSObject, CLLocationManagerDelegate {
         self.manager.delegate = self
     }
 
+    @MainActor
     static func requestWhenInUse() async -> PermissionStatus {
         let requester = LocationPermissionRequester()
         activeRequester = requester
