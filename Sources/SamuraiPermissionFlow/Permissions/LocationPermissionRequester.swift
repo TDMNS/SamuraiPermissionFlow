@@ -48,7 +48,7 @@ final class LocationPermissionRequester: NSObject, CLLocationManagerDelegate {
         Self.activeRequester = nil
     }
 
-    private static func mapStatus(_ status: CLAuthorizationStatus) -> PermissionStatus {
+    internal static func mapStatus(_ status: CLAuthorizationStatus) -> PermissionStatus {
         switch status {
         case .notDetermined:
             return .notDetermined

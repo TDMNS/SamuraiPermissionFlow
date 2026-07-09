@@ -1,8 +1,17 @@
-import Testing
+//
+//  SamuraiPermissionFlowTests.swift
+//  SamuraiPermissionFlow
+//
+//  Created by Ksyuleg on 10.07.2026.
+//
+
+import XCTest
 @testable import SamuraiPermissionFlow
 
-@Test func example() async throws {
-    // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-    // Swift Testing Documentation
-    // https://developer.apple.com/documentation/testing
+final class SamuraiPermissionFlowTests: XCTestCase {
+
+    func testPermissionStatusEquatable() {
+        XCTAssertEqual(PermissionStatus.authorized, .authorized)
+        XCTAssertNotEqual(PermissionStatus.authorized, .denied)
+    }
 }

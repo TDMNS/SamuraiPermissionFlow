@@ -47,7 +47,7 @@ public struct LocationPermission: PermissionProvider {
         }
     }
 
-    private static func mapStatus(_ status: CLAuthorizationStatus) -> PermissionStatus {
+    internal static func mapStatus(_ status: CLAuthorizationStatus) -> PermissionStatus {
         switch status {
         case .notDetermined:
             return .notDetermined

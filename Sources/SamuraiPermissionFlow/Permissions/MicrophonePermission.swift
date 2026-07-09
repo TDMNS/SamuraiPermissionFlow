@@ -46,7 +46,7 @@ public struct MicrophonePermission: PermissionProvider {
         }
     }
 
-    private static func mapStatus(_ status: AVAudioSession.RecordPermission) -> PermissionStatus {
+    internal static func mapStatus(_ status: AVAudioSession.RecordPermission) -> PermissionStatus {
         switch status {
         case .undetermined:
             return .notDetermined
