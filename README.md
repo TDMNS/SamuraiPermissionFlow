@@ -18,6 +18,30 @@ A lightweight iOS Swift package for working with app permissions using a simple 
 - iOS 15+
 - Swift 5.9+
 
+## Info.plist
+
+Some permissions require usage descriptions in the host app's `Info.plist`.
+
+In Xcode, open your app target → `Info` → `Custom iOS Target Properties` and add:
+
+| Xcode name | Raw key |
+|---|---|
+| Privacy - Camera Usage Description | `NSCameraUsageDescription` |
+| Privacy - Microphone Usage Description | `NSMicrophoneUsageDescription` |
+| Privacy - Photo Library Usage Description | `NSPhotoLibraryUsageDescription` |
+| Privacy - Location When In Use Usage Description | `NSLocationWhenInUseUsageDescription` |
+
+Example values:
+
+```text
+Camera access is needed to take photos.
+Microphone access is needed to record audio.
+Photo library access is needed to select photos.
+Location access is needed to show nearby places.
+```
+
+Without the required usage description, iOS may terminate the app when requesting authorization.
+
 ## Installation
 
 ### Swift Package Manager
@@ -85,6 +109,12 @@ Required `Info.plist` key:
 NSCameraUsageDescription
 ```
 
+Xcode name:
+
+```text
+Privacy - Camera Usage Description
+```
+
 ### Microphone
 
 ```swift
@@ -97,6 +127,12 @@ Required `Info.plist` key:
 NSMicrophoneUsageDescription
 ```
 
+Xcode name:
+
+```text
+Privacy - Microphone Usage Description
+```
+
 ### Photos
 
 ```swift
@@ -107,6 +143,12 @@ Recommended `Info.plist` key:
 
 ```text
 NSPhotoLibraryUsageDescription
+```
+
+Xcode name:
+
+```text
+Privacy - Photo Library Usage Description
 ```
 
 `PhotosPermission` supports `.limited` status.
@@ -129,6 +171,12 @@ Required `Info.plist` key:
 
 ```text
 NSLocationWhenInUseUsageDescription
+```
+
+Xcode name:
+
+```text
+Privacy - Location When In Use Usage Description
 ```
 
 Without this key, iOS may terminate the app when requesting authorization.
@@ -163,6 +211,14 @@ public enum PermissionStatus: Equatable, Sendable {
     case restricted
     case limited
 }
+```
+
+## Example
+
+A simple SwiftUI example is available in:
+
+```text
+Examples/ExampleView.swift
 ```
 
 ## Current Limitations
