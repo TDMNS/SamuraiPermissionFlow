@@ -13,5 +13,6 @@ public enum SamuraiPermission {
     #if os(iOS)
     public static let microphone = MicrophonePermission()
     public static let photos = PhotosPermission()
+    public static let notifications = NotificationsPermission()
     #endif
 }
