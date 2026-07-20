@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  swiftpm:
+    name: SwiftPM
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: swift build
+
+      - name: Test
+        run: swift test
+
+  ios-simulator:
+    name: iOS Simulator
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare Xcode package workspace
+        run: |
+          mkdir -p .swiftpm/xcode/package.xcworkspace
+          cp .github/ci/package.xcworkspacedata .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+
+      - name: Test
+        run: |
+          xcodebuild test \
+            -workspace .swiftpm/xcode/package.xcworkspace \
+            -scheme SamuraiPermissionFlow \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO
