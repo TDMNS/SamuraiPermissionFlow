@@ -22,29 +22,29 @@ public struct LocationPermission: PermissionProvider {
 
     public var status: PermissionStatus {
         get async {
-            let manager = CLLocationManager()
-            let systemStatus = manager.authorizationStatus
-            let permissionStatus = Self.mapStatus(systemStatus)
-            return permissionStatus
+            await Self.currentStatus()
         }
     }
 
     public func request() async -> PermissionStatus {
-        let manager = CLLocationManager()
-        let currentStatus = manager.authorizationStatus
+        let currentStatus = await Self.currentStatus()
 
-        switch currentStatus {
-        case .authorizedWhenInUse, .authorizedAlways:
-            return .authorized
-        case .denied:
-            return .denied
-        case .restricted:
-            return .restricted
-        case .notDetermined:
+        if currentStatus == .notDetermined {
             return await LocationPermissionRequester.requestWhenInUse()
-        @unknown default:
-            return .denied
         }
+
+        return currentStatus
+    }
+
+    @MainActor
+    private static func currentStatus() -> PermissionStatus {
+        guard CLLocationManager.locationServicesEnabled() else {
+            // Location is unavailable system-wide, not denied specifically for this app.
+            return .restricted
+        }
+
+        let manager = CLLocationManager()
+        return mapStatus(manager.authorizationStatus)
     }
 
     internal static func mapStatus(_ status: CLAuthorizationStatus) -> PermissionStatus {
