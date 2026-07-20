@@ -11,23 +11,37 @@ import XCTest
 final class PermissionProviderTests: XCTestCase {
 
     func testIsGrantedUsesCurrentStatus() async {
-        let grantedProvider = MockPermissionProvider(status: .limited)
-        let deniedProvider = MockPermissionProvider(status: .denied)
-        let isGranted = await grantedProvider.isGranted()
-        let isDeniedGranted = await deniedProvider.isGranted()
+        let expectations: [(status: PermissionStatus, expected: Bool)] = [
+            (.authorized, true),
+            (.limited, true),
+            (.denied, false),
+            (.restricted, false),
+            (.notDetermined, false),
+        ]
 
-        XCTAssertTrue(isGranted)
-        XCTAssertFalse(isDeniedGranted)
+        for expectation in expectations {
+            let provider = MockPermissionProvider(status: expectation.status)
+            let result = await provider.isGranted()
+
+            XCTAssertEqual(result, expectation.expected, "Unexpected result for \(expectation.status)")
+        }
     }
 
     func testRequiresSettingsUsesCurrentStatus() async {
-        let restrictedProvider = MockPermissionProvider(status: .restricted)
-        let requestableProvider = MockPermissionProvider(status: .notDetermined)
-        let requiresSettings = await restrictedProvider.requiresSettings()
-        let requestableRequiresSettings = await requestableProvider.requiresSettings()
+        let expectations: [(status: PermissionStatus, expected: Bool)] = [
+            (.denied, true),
+            (.restricted, true),
+            (.authorized, false),
+            (.limited, false),
+            (.notDetermined, false),
+        ]
 
-        XCTAssertTrue(requiresSettings)
-        XCTAssertFalse(requestableRequiresSettings)
+        for expectation in expectations {
+            let provider = MockPermissionProvider(status: expectation.status)
+            let result = await provider.requiresSettings()
+
+            XCTAssertEqual(result, expectation.expected, "Unexpected result for \(expectation.status)")
+        }
     }
 }
 
