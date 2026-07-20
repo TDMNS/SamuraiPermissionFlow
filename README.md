@@ -11,9 +11,9 @@ SamuraiPermissionFlow is a lightweight iOS Swift Package for working with app pe
 - Location When In Use permission
 - Open app settings helper
 - Unified `PermissionStatus`
-- Unified API through `PermissionKind`
+- Unified async/await API
+- `PermissionKind`-based API
 - Reusable SwiftUI `PermissionGate`
-- Swift Concurrency support
 - No external dependencies
 
 ## Requirements
@@ -107,6 +107,14 @@ let newStatus = await SamuraiPermission.request(.camera)
 
 ## Supported Permissions
 
+| Permission | Provider | Required usage description |
+|---|---|---|
+| Camera | `SamuraiPermission.camera` | `NSCameraUsageDescription` |
+| Microphone | `SamuraiPermission.microphone` | `NSMicrophoneUsageDescription` |
+| Photos | `SamuraiPermission.photos` | `NSPhotoLibraryUsageDescription` |
+| Notifications | `SamuraiPermission.notifications` | None; user authorization is still required |
+| Location When In Use | `SamuraiPermission.location` | `NSLocationWhenInUseUsageDescription` |
+
 ### Camera
 
 ```swift
@@ -149,7 +157,7 @@ Privacy - Microphone Usage Description
 let status = await SamuraiPermission.photos.request()
 ```
 
-Recommended `Info.plist` key:
+Required `Info.plist` key:
 
 ```text
 NSPhotoLibraryUsageDescription
