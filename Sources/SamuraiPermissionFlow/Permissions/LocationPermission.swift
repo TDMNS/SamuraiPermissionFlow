@@ -38,11 +38,6 @@ public struct LocationPermission: PermissionProvider {
 
     @MainActor
     private static func currentStatus() -> PermissionStatus {
-        guard CLLocationManager.locationServicesEnabled() else {
-            // Location is unavailable system-wide, not denied specifically for this app.
-            return .restricted
-        }
-
         let manager = CLLocationManager()
         return mapStatus(manager.authorizationStatus)
     }
