@@ -56,9 +56,8 @@ public struct NotificationsPermission: PermissionProvider {
             return .denied
         case .authorized:
             return .authorized
-        case .provisional:
-            return .authorized
-        case .ephemeral:
+        case .provisional, .ephemeral:
+            // In v0.x these are granted because notifications remain available with system limits.
             return .authorized
         @unknown default:
             return .denied

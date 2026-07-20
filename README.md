@@ -11,6 +11,8 @@ A lightweight iOS Swift package for working with app permissions using a simple 
 - Location When In Use permission
 - Open app settings helper
 - Unified `PermissionStatus`
+- Unified API through `PermissionKind`
+- Reusable SwiftUI `PermissionGate`
 - Swift Concurrency support
 
 ## Requirements
@@ -82,7 +84,7 @@ case .authorized:
     print("Access granted")
 
 case .denied:
-    await PermissionSettings.open()
+    PermissionSettings.open()
 
 case .notDetermined:
     print("Permission has not been requested yet")
@@ -93,6 +95,13 @@ case .restricted:
 case .limited:
     print("Limited access")
 }
+```
+
+The existing provider-based API remains available. You can also use the unified API with `PermissionKind`:
+
+```swift
+let status = await SamuraiPermission.status(.camera)
+let newStatus = await SamuraiPermission.request(.camera)
 ```
 
 ## Supported Permissions
@@ -183,12 +192,14 @@ Without this key, iOS may terminate the app when requesting authorization.
 
 Note: Location Services must be enabled on the device. If Location Services are disabled globally, iOS may not show the regular permission request flow.
 
+SamuraiPermissionFlow reports globally disabled Location Services as `.restricted`, because location is unavailable at the system level rather than denied specifically for the app.
+
 ## Open Settings
 
 If the user denied permission, iOS usually does not show the system permission alert again. In this case, open the app settings screen:
 
 ```swift
-await PermissionSettings.open()
+PermissionSettings.open()
 ```
 
 Example:
@@ -197,7 +208,7 @@ Example:
 let status = await SamuraiPermission.camera.request()
 
 if status == .denied {
-    await PermissionSettings.open()
+    PermissionSettings.open()
 }
 ```
 
@@ -206,7 +217,7 @@ if status == .denied {
 SamuraiPermissionFlow maps different Apple permission statuses to one unified enum:
 
 ```swift
-public enum PermissionStatus: Equatable, Sendable {
+public enum PermissionStatus: Equatable, Sendable, CustomStringConvertible {
     case notDetermined
     case authorized
     case denied
@@ -214,6 +225,74 @@ public enum PermissionStatus: Equatable, Sendable {
     case limited
 }
 ```
+
+Convenience properties are available for common permission flows:
+
+```swift
+if status.isGranted {
+    // Continue with the protected feature.
+} else if status.requiresSettings {
+    PermissionSettings.open()
+} else if status.canRequest {
+    let newStatus = await SamuraiPermission.request(.camera)
+}
+```
+
+Available helpers:
+
+- `isGranted`
+- `isDenied`
+- `isRestricted`
+- `isNotDetermined`
+- `isLimited`
+- `requiresSettings`
+- `canRequest`
+
+Every `PermissionProvider` also provides async convenience methods:
+
+```swift
+let isGranted = await SamuraiPermission.camera.isGranted()
+let requiresSettings = await SamuraiPermission.camera.requiresSettings()
+```
+
+## SwiftUI PermissionGate
+
+`PermissionGate` displays its content only while the requested permission is granted:
+
+```swift
+PermissionGate(.camera) {
+    CameraView()
+}
+```
+
+Set `requestOnAppear` to request an undetermined permission automatically once:
+
+```swift
+PermissionGate(.camera, requestOnAppear: true) {
+    CameraView()
+}
+```
+
+Custom request and denied views are also supported:
+
+```swift
+PermissionGate(
+    .camera,
+    requestOnAppear: false
+) {
+    CameraView()
+} request: {
+    CustomRequestView()
+} denied: {
+    CustomDeniedView()
+}
+```
+
+The default denied view includes an **Open Settings** button. Settings are never opened automatically.
+
+## Continuous Integration
+
+GitHub Actions verifies the package with both SwiftPM on macOS and the complete test suite on an iOS Simulator.
 
 ## Example
 
@@ -227,7 +306,6 @@ Examples/ExampleView.swift
 
 - iOS-first package
 - Only Location When In Use is supported
-- No SwiftUI permission gate yet
 - No UIKit helper screens yet
 - Notification `.provisional` and `.ephemeral` are currently mapped to `.authorized`
 

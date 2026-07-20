@@ -12,12 +12,13 @@ import Foundation
 
 /// Internal helper that bridges `CLLocationManagerDelegate` callbacks
 /// to async/await for "When In Use" location permission requests.
+@MainActor
 final class LocationPermissionRequester: NSObject, CLLocationManagerDelegate {
 
     private static var activeRequester: LocationPermissionRequester?
 
     private let manager: CLLocationManager
-    private var continuation: CheckedContinuation<PermissionStatus, Never>?
+    private var continuations: [CheckedContinuation<PermissionStatus, Never>] = []
 
     private override init() {
         self.manager = CLLocationManager()
@@ -25,28 +26,49 @@ final class LocationPermissionRequester: NSObject, CLLocationManagerDelegate {
         self.manager.delegate = self
     }
 
-    @MainActor
     static func requestWhenInUse() async -> PermissionStatus {
-        let requester = LocationPermissionRequester()
-        activeRequester = requester
+        let requester: LocationPermissionRequester
+
+        if let activeRequester {
+            requester = activeRequester
+        } else {
+            requester = LocationPermissionRequester()
+            activeRequester = requester
+        }
 
         return await withCheckedContinuation { continuation in
-            requester.continuation = continuation
-            requester.manager.requestWhenInUseAuthorization()
+            let shouldStartRequest = requester.continuations.isEmpty
+            requester.continuations.append(continuation)
+
+            if shouldStartRequest {
+                requester.manager.requestWhenInUseAuthorization()
+            }
         }
     }
 
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        Task { @MainActor [weak self] in
+            self?.completeRequestIfNeeded()
+        }
+    }
+
+    private func completeRequestIfNeeded() {
         let status = manager.authorizationStatus
 
         guard status != .notDetermined else { return }
+        guard !continuations.isEmpty else { return }
 
-        continuation?.resume(
-            returning: Self.mapStatus(status)
-        )
+        let pendingContinuations = continuations
+        continuations.removeAll()
 
-        continuation = nil
-        Self.activeRequester = nil
+        if Self.activeRequester === self {
+            Self.activeRequester = nil
+        }
+
+        let permissionStatus = Self.mapStatus(status)
+        pendingContinuations.forEach { continuation in
+            continuation.resume(returning: permissionStatus)
+        }
     }
 
     internal static func mapStatus(_ status: CLAuthorizationStatus) -> PermissionStatus {
