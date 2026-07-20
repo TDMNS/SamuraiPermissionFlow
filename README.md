@@ -1,6 +1,6 @@
 # SamuraiPermissionFlow
 
-A lightweight iOS Swift package for working with app permissions using a simple async/await API.
+SamuraiPermissionFlow is a lightweight iOS Swift Package for working with app permissions using async/await and SwiftUI permission gates.
 
 ## Features
 
@@ -14,6 +14,7 @@ A lightweight iOS Swift package for working with app permissions using a simple 
 - Unified API through `PermissionKind`
 - Reusable SwiftUI `PermissionGate`
 - Swift Concurrency support
+- No external dependencies
 
 ## Requirements
 
@@ -168,7 +169,7 @@ Privacy - Photo Library Usage Description
 let status = await SamuraiPermission.notifications.request()
 ```
 
-Notification permission does not require an `Info.plist` usage description.
+Notification permission does not require an `Info.plist` usage description, but the app must request user authorization.
 
 ### Location When In Use
 
@@ -207,8 +208,8 @@ Example:
 ```swift
 let status = await SamuraiPermission.camera.request()
 
-if status == .denied {
-    PermissionSettings.open()
+if status.requiresSettings {
+    await PermissionSettings.open()
 }
 ```
 
@@ -306,8 +307,21 @@ Examples/ExampleView.swift
 
 - iOS-first package
 - Only Location When In Use is supported
+- Location Always is not implemented yet
+- Contacts, Calendar, and Bluetooth permissions are not implemented yet
 - No UIKit helper screens yet
 - Notification `.provisional` and `.ephemeral` are currently mapped to `.authorized`
+- Unit tests do not trigger real system permission alerts
+
+## Roadmap
+
+- Location Always
+- Contacts
+- Calendar
+- Bluetooth
+- UIKit helper screens
+- Better notification status granularity
+- DocC documentation
 
 ## License
 
