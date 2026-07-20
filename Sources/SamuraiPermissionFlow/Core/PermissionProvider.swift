@@ -12,3 +12,13 @@ public protocol PermissionProvider: Sendable {
     
     func request() async -> PermissionStatus
 }
+
+public extension PermissionProvider {
+    func isGranted() async -> Bool {
+        await status.isGranted
+    }
+
+    func requiresSettings() async -> Bool {
+        await status.requiresSettings
+    }
+}
