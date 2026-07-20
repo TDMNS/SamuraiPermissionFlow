@@ -201,8 +201,6 @@ Without this key, iOS may terminate the app when requesting authorization.
 
 Note: Location Services must be enabled on the device. If Location Services are disabled globally, iOS may not show the regular permission request flow.
 
-SamuraiPermissionFlow reports globally disabled Location Services as `.restricted`, because location is unavailable at the system level rather than denied specifically for the app.
-
 ## Open Settings
 
 If the user denied permission, iOS usually does not show the system permission alert again. In this case, open the app settings screen:
