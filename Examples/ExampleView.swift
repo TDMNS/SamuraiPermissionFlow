@@ -17,13 +17,20 @@ struct ExampleView: View {
     @State private var locationStatus: PermissionStatus?
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             List {
                 permissionRow(
                     title: "Camera",
                     status: cameraStatus
                 ) {
                     cameraStatus = await SamuraiPermission.camera.request()
+                }
+
+                permissionRow(
+                    title: "Camera (PermissionKind)",
+                    status: cameraStatus
+                ) {
+                    cameraStatus = await SamuraiPermission.request(.camera)
                 }
 
                 permissionRow(
@@ -56,9 +63,13 @@ struct ExampleView: View {
 
                 Section {
                     Button("Open Settings") {
-                        Task {
-                            await PermissionSettings.open()
-                        }
+                        PermissionSettings.open()
+                    }
+                }
+
+                Section("PermissionGate") {
+                    PermissionGate(.camera) {
+                        Text("Camera permission granted")
                     }
                 }
             }
