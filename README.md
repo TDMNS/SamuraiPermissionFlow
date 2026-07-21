@@ -16,6 +16,22 @@ SamuraiPermissionFlow is a lightweight iOS Swift Package for working with app pe
 - Reusable SwiftUI `PermissionGate`
 - No external dependencies
 
+## Demo App
+
+Explore a complete SwiftUI integration in [SamuraiPermissionFlowDemo](https://github.com/TDMNS/SamuraiPermissionFlowDemo).
+
+The demo includes a permission dashboard for camera, microphone, photos, notifications, and location. It demonstrates checking and requesting access, opening Settings, using `PermissionGate`, and organizing the app with lightweight MVVM. The interface also supports dark mode, accessibility, and ProMotion.
+
+<p align="center">
+  <a href="https://github.com/TDMNS/SamuraiPermissionFlowDemo">
+    <img src="https://raw.githubusercontent.com/TDMNS/SamuraiPermissionFlowDemo/main/Docs/dashboard.png" alt="SamuraiPermissionFlowDemo permission dashboard" width="280">
+  </a>
+</p>
+
+[View the demo repository →](https://github.com/TDMNS/SamuraiPermissionFlowDemo)
+
+For a minimal package-only example, see [`Examples/ExampleView.swift`](Examples/ExampleView.swift).
+
 ## Requirements
 
 - iOS 15+
@@ -300,14 +316,6 @@ The default denied view includes an **Open Settings** button. Settings are never
 ## Continuous Integration
 
 GitHub Actions verifies the package with both SwiftPM on macOS and the complete test suite on an iOS Simulator.
-
-## Example
-
-A simple SwiftUI example is available in:
-
-```text
-Examples/ExampleView.swift
-```
 
 ## Current Limitations
 
